@@ -169,6 +169,9 @@
     "symfony/service-contracts": {
         "version": "v1.1.2"
     },
+    "symfony/stopwatch": {
+        "version": "v4.3.0"
+    },
     "symfony/var-exporter": {
         "version": "v4.3.0"
     },
