@@ -1,15 +1,33 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
 
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $importDir: '%kernel.project_dir%/import/'
 
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    Aa\AkeneoDataLoader\Api\Credentials:
+        arguments:
+            - '%env(AKENEO_API_HOST)%'
+            - '%env(AKENEO_API_CLIENT_ID)%'
+            - '%env(AKENEO_API_SECRET)%'
+            - '%env(AKENEO_API_USER)%'
+            - '%env(AKENEO_API_PASSWORD)%'
+
+    Aa\AkeneoDataLoader\Api\Configuration:
+        arguments:
+            - '%kernel.project_dir%/import/'
+            - 100
+
+    Aa\AkeneoDataLoader\LoaderFactory:
+
+    Aa\AkeneoDataLoader\LoaderInterface:
+        factory: 'Aa\AkeneoDataLoader\LoaderFactory:createByCredentials'
+        arguments:
+            - '@Aa\AkeneoDataLoader\Api\Credentials'
+            - '@Aa\AkeneoDataLoader\Api\Configuration'
