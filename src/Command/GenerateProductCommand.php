@@ -8,6 +8,9 @@ use Aa\AkeneoDataLoader\LoaderInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Stopwatch\Stopwatch;
+use Traversable;
 
 /**
  * This command demonstrates how to generate a product with dummy data.
@@ -41,48 +44,29 @@ class GenerateProductCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $data = $this->getProductData(1000);
+
+        $style = new SymfonyStyle($input, $output);
+        $stopwatch = new Stopwatch();
+        $event = $stopwatch->start('load');
+
         try {
-
-            $data = [];
-
-            for ($i = 1; $i <= 1000; $i++) {
-
-                $data[] = [
-                    'identifier' => 'test-'.$i,
-                    'family' => 'toiletries',
-                    'values' => [
-                        'name' => [[
-                            'data' => 'bla',
-                            'locale' => 'en_GB',
-                            'scope' => null,
-                        ]],
-                        'short_description' => [[
-                            'data' => 'bla',
-                            'locale' => 'en_GB',
-                            'scope' => 'ecommerce',
-                        ]],
-                        'description' => [[
-                            'data' => 'bla',
-                            'locale' => 'en_GB',
-                            'scope' => null,
-                        ]],
-                    ],
-                ];
-            }
-
             $this->loader->load('product', $data);
-
-            $output->writeln([PHP_EOL, 'Generating finished.']);
-
         } catch (LoaderValidationException $e) {
-
-            $this->outputException($e, $output);
-
-            exit(1);
+            $this->outputException($e, $style);
         }
+
+        $stopwatch->stop('load');
+
+        $style->table([], [
+
+            ['Time', ($event->getDuration() / 1000). ' s'],
+            ['Memory', ($event->getMemory() / (1024*1024)). ' MB'],
+
+        ]);
     }
 
-    protected function outputException(LoaderValidationException $e, OutputInterface $output)
+    private function outputException(LoaderValidationException $e, OutputInterface $output)
     {
         $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 
@@ -94,6 +78,40 @@ class GenerateProductCommand extends Command
                     $error['message'] ?? ''
                 )
             );
+        }
+    }
+
+    private function getProductData(int $count): Traversable
+    {
+        for ($i = 1; $i <= $count; $i++) {
+
+            yield [
+                'identifier' => 'test-'.$i,
+                'family' => 'toiletries',
+                'values' => [
+                    'name' => [
+                        [
+                            'data' => 'bla',
+                            'locale' => 'en_GB',
+                            'scope' => null,
+                        ]
+                    ],
+                    'short_description' => [
+                        [
+                            'data' => 'bla',
+                            'locale' => 'en_GB',
+                            'scope' => 'ecommerce',
+                        ]
+                    ],
+                    'description' => [
+                        [
+                            'data' => 'bla',
+                            'locale' => 'en_GB',
+                            'scope' => null,
+                        ]
+                    ],
+                ],
+            ];
         }
     }
 }
