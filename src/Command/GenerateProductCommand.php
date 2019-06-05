@@ -44,7 +44,7 @@ class GenerateProductCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $data = $this->getProductData(1000);
+        $data = $this->getProductData(10);
 
         $style = new SymfonyStyle($input, $output);
         $stopwatch = new Stopwatch();

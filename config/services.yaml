@@ -2,8 +2,8 @@ parameters:
 
 services:
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
         bind:
             $importDir: '%kernel.project_dir%/import/'
 
@@ -25,9 +25,11 @@ services:
             - 100
 
     Aa\AkeneoDataLoader\LoaderFactory:
+        arguments:
+            - '@Aa\AkeneoDataLoader\Api\Configuration'
 
     Aa\AkeneoDataLoader\LoaderInterface:
         factory: 'Aa\AkeneoDataLoader\LoaderFactory:createByCredentials'
         arguments:
             - '@Aa\AkeneoDataLoader\Api\Credentials'
-            - '@Aa\AkeneoDataLoader\Api\Configuration'
+
