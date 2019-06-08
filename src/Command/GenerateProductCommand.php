@@ -2,8 +2,7 @@
 
 namespace App\Command;
 
-use Aa\AkeneoDataLoader\Exception\LoaderValidationException;
-use Aa\AkeneoDataLoader\Loader;
+use Aa\AkeneoDataLoader\Exception\LoaderException;
 use Aa\AkeneoDataLoader\LoaderInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,7 +51,7 @@ class GenerateProductCommand extends Command
 
         try {
             $this->loader->load('product', $data);
-        } catch (LoaderValidationException $e) {
+        } catch (LoaderException $e) {
             $this->outputException($e, $style);
         }
 
@@ -66,18 +65,12 @@ class GenerateProductCommand extends Command
         ]);
     }
 
-    private function outputException(LoaderValidationException $e, OutputInterface $output)
+    private function outputException(LoaderException $e, OutputInterface $output)
     {
         $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 
-        foreach ($e->getValidationErrors() as $error) {
-            $output->writeln(
-                sprintf(
-                    '<error>%s: %s</error>',
-                    $error['code'] ?? '',
-                    $error['message'] ?? ''
-                )
-            );
+        foreach ($e->getErrors() as $error) {
+            $output->writeln(sprintf('<error>%s</error>', $error));
         }
     }
 

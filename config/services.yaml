@@ -19,14 +19,14 @@ services:
             - '%env(AKENEO_API_USER)%'
             - '%env(AKENEO_API_PASSWORD)%'
 
-    Aa\AkeneoDataLoader\Api\Configuration:
+    Aa\AkeneoDataLoader\Connector\Configuration:
         arguments:
             - '%kernel.project_dir%/import/'
             - 100
 
     Aa\AkeneoDataLoader\LoaderFactory:
         arguments:
-            - '@Aa\AkeneoDataLoader\Api\Configuration'
+            - '@Aa\AkeneoDataLoader\Connector\Configuration'
 
     Aa\AkeneoDataLoader\LoaderInterface:
         factory: 'Aa\AkeneoDataLoader\LoaderFactory:createByCredentials'
