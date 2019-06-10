@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use Aa\AkeneoDataLoader\Exception\LoaderException;
+use Aa\AkeneoDataLoader\Exception\LoaderFailureException;
 use Aa\AkeneoDataLoader\LoaderInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,7 +43,7 @@ class GenerateProductCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $data = $this->getProductData(20);
+        $data = $this->getProductData(5);
 
         $style = new SymfonyStyle($input, $output);
         $stopwatch = new Stopwatch();
@@ -51,7 +51,7 @@ class GenerateProductCommand extends Command
 
         try {
             $this->loader->load('product', $data);
-        } catch (LoaderException $e) {
+        } catch (LoaderFailureException $e) {
             $this->outputException($e, $style);
         }
 
@@ -65,13 +65,15 @@ class GenerateProductCommand extends Command
         ]);
     }
 
-    private function outputException(LoaderException $e, OutputInterface $output)
+    private function outputException(LoaderFailureException $e, OutputInterface $output)
     {
         $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 
-        foreach ($e->getErrors() as $error) {
-            $output->writeln(sprintf('<error>%s</error>', $error));
+        if (null !== $e->getFailure()) {
+            $output->write(sprintf('<error>%s</error>', (string)$e->getFailure()));
         }
+
+        $output->writeln([]);
     }
 
     private function getProductData(int $count): Traversable
@@ -87,6 +89,13 @@ class GenerateProductCommand extends Command
                             'data' => 'bla',
                             'locale' => 'en_GB',
                             'scope' => null,
+                        ]
+                    ],
+                    'image' => [
+                        [
+                            'data' => '@file:/usr/src/app/data/health.jpeg',
+                            'locale' => 'en_GB',
+                            'scope' => 'ecommerce',
                         ]
                     ],
                     'short_description' => [
