@@ -21,11 +21,6 @@ class GenerateProductCommand extends Command
      */
     private $loader;
 
-    /**
-     * @var string
-     */
-    private $importDir;
-
     public function __construct(LoaderInterface $loader)
     {
         parent::__construct();
@@ -42,14 +37,13 @@ class GenerateProductCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $data = $this->getProductData(5);
-
         $style = new SymfonyStyle($input, $output);
         $stopwatch = new Stopwatch();
         $event = $stopwatch->start('load');
 
         try {
-            $this->loader->load('product', $data);
+            $this->loader->load('asset-tag', $this->getAssetTagData());
+//            $this->loader->load('product', $this->getProductData(5));
         } catch (LoaderFailureException $e) {
             $this->outputException($e, $style);
         }
@@ -114,5 +108,12 @@ class GenerateProductCommand extends Command
                 ],
             ];
         }
+    }
+
+    private function getAssetTagData(): Traversable
+    {
+        yield ['code' => 'tag1'];
+        yield ['code' => 'tag2'];
+        yield ['code' => 'tag86'];
     }
 }

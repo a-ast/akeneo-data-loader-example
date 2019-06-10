@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/a-ast/akeneo-data-loader.git",
-                "reference": "a246a98ac39c4e37ed50a32a2ffed1a751789a51"
+                "reference": "0e438a12b8f57e8413f4b1ef83d0e6b77c79a845"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a-ast/akeneo-data-loader/zipball/a246a98ac39c4e37ed50a32a2ffed1a751789a51",
-                "reference": "a246a98ac39c4e37ed50a32a2ffed1a751789a51",
+                "url": "https://api.github.com/repos/a-ast/akeneo-data-loader/zipball/0e438a12b8f57e8413f4b1ef83d0e6b77c79a845",
+                "reference": "0e438a12b8f57e8413f4b1ef83d0e6b77c79a845",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 }
             ],
             "description": "Akeneo PIM Data Loader",
-            "time": "2019-06-10 15:24:00"
+            "time": "2019-06-10 18:36:17"
         },
         {
             "name": "akeneo/api-php-client",
