@@ -4,8 +4,6 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        bind:
-            $importDir: '%kernel.project_dir%/import/'
 
     App\:
         resource: '../src/*'
@@ -21,7 +19,7 @@ services:
 
     Aa\AkeneoDataLoader\Connector\Configuration:
         arguments:
-            - '%kernel.project_dir%/import/'
+            - '%kernel.project_dir%/data/'
             - 100
 
     Aa\AkeneoDataLoader\LoaderFactory:

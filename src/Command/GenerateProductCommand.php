@@ -26,12 +26,11 @@ class GenerateProductCommand extends Command
      */
     private $importDir;
 
-    public function __construct(LoaderInterface $loader, string $importDir)
+    public function __construct(LoaderInterface $loader)
     {
         parent::__construct();
 
         $this->loader = $loader;
-        $this->importDir = $importDir;
     }
 
     protected function configure()
@@ -93,7 +92,7 @@ class GenerateProductCommand extends Command
                     ],
                     'image' => [
                         [
-                            'data' => '@file:/usr/src/app/data/health.jpeg',
+                            'data' => '@file:health.jpeg',
                             'locale' => 'en_GB',
                             'scope' => 'ecommerce',
                         ]
