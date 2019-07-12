@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Command;
+namespace App\PimData;
 
 use Akeneo\Pim\ApiClient\AkeneoPimClientInterface;
 use Akeneo\Pim\ApiClient\Search\SearchBuilder;
-use App\PimData\PimData;
 
 class PimDataRepository
 {
