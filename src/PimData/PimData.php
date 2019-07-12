@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Model;
+namespace App\PimData;
 
-class FetchedPimData
+class PimData
 {
     /**
      * @var array
