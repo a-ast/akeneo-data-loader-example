@@ -70,6 +70,8 @@ class DumpPimDataCommand extends Command
         $this->dumper->dump('data/attribute-group.yaml', $pimData->getAttributeGroups());
         $this->dumper->dump('data/product-model.yaml', $pimData->getProductModels());
         $this->dumper->dump('data/product.yaml', $pimData->getProducts());
+        $this->dumper->dump('data/category.yaml', $pimData->getCategories());
+        $this->dumper->dump('data/association-type.yaml', $pimData->getAssociationTypes());
     }
 
     private function dumpAssets(array $assets)
