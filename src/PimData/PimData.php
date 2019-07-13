@@ -55,7 +55,15 @@ class PimData
     private $productAssets;
 
     /**
+     * @var array
      */
+    private $categories;
+
+    /**
+     * @var array
+     */
+    private $associationTypes;
+
     public function __construct(
         array $channels,
         array $families,
@@ -66,7 +74,9 @@ class PimData
         array $productModels,
         array $productModelAssets,
         array $products,
-        array $productAssets
+        array $productAssets,
+        array $categories,
+        array $associationTypes
     ) {
         $this->channels = $channels;
         $this->families = $families;
@@ -78,6 +88,8 @@ class PimData
         $this->productModelAssets = $productModelAssets;
         $this->products = $products;
         $this->productAssets = $productAssets;
+        $this->categories = $categories;
+        $this->associationTypes = $associationTypes;
     }
 
 
@@ -129,5 +141,15 @@ class PimData
     public function getProductAssets(): array
     {
         return $this->productAssets;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    public function getAssociationTypes(): array
+    {
+        return $this->associationTypes;
     }
 }

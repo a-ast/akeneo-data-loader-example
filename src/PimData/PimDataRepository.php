@@ -20,13 +20,13 @@ class PimDataRepository
     public function getByFamiliyCodes(array $familyCodes): PimData
     {
         $channels = $this->getChannels();
+        $associationTypes = $this->getAssociationTypes();
         $families = $this->getFamilies($familyCodes);
         $familyVariants = $this->getFamilyVariants($familyCodes);
 
         $attributeCodes = $this->getAttributeCodes($families);
         $attributes = $this->getAttributes($attributeCodes);
         $attributeOptions = $this->getAttributeOptions($attributes);
-        // @todo: filter-out unknown attributes from attributes value
         $attributeGroups = $this->getAttributeGroups($attributeCodes);
 
         $productModels = $this->getProductModels($familyCodes);
@@ -36,6 +36,10 @@ class PimDataRepository
         $products = $this->getProducts($familyCodes);
         $productAssets = $this->extractAssets($products);
         $this->replaceAssets($products, $productAssets);
+
+        $categoryCodes = $this->getCategoryCodesFromProducts($products);
+        $categories = $this->getCategories($categoryCodes);
+
 
         return new PimData(
             $channels,
@@ -47,7 +51,9 @@ class PimDataRepository
             $productModels,
             $productModelAssets,
             $products,
-            $productAssets
+            $productAssets,
+            $categories,
+            $associationTypes
         );
     }
 
@@ -109,7 +115,7 @@ class PimDataRepository
             );
         }
 
-        return $attributeCodes;
+        return array_unique($attributeCodes);
     }
 
     private function getAttributes(array $attributeCodes)
@@ -158,12 +164,26 @@ class PimDataRepository
         return $data;
     }
 
-    private function getAttributeGroups(): array
+    private function getAttributeGroups(array $attributeCodes): array
     {
         $api = $this->pimClient->getAttributeGroupApi();
-        $data = $api->all(100, []);
+        $data = iterator_to_array($api->all(100, []));
 
-        return iterator_to_array($data);
+        foreach ($data as $index => $item) {
+
+            $existingAttributes = array_values(array_intersect(
+                $item['attributes'],
+                $attributeCodes
+            ));
+
+            $data[$index]['attributes'] = $existingAttributes;
+
+            if (0 === count($existingAttributes)) {
+                unset($data[$index]);
+            }
+        }
+
+        return array_values($data);
     }
 
     private function getProductModels(array $familyCodes): array
@@ -287,5 +307,42 @@ class PimDataRepository
         );
 
         return $data;
+    }
+
+    private function getCategoryCodesFromProducts(array $products): array
+    {
+        $allCategories = array_column($products, 'categories');
+
+        return array_unique(array_merge(...$allCategories));
+    }
+
+    private function getCategories(array $categoryCodes): array
+    {
+        $api = $this->pimClient->getCategoryApi();
+        $data = iterator_to_array($api->all(100, []));
+
+        $categories = array_values(
+            array_filter(
+                $data,
+                function ($value) use ($categoryCodes) {
+
+                    return in_array($value['code'], $categoryCodes);
+
+                }
+            )
+        );
+
+        // Simply remove hierarchy to avoid fetching parent categories
+        foreach ($categories as &$category) {
+            $category['parent'] = null;
+        }
+
+        return $categories;
+    }
+
+    private function getAssociationTypes(): array
+    {
+        $api = $this->pimClient->getAssociationTypeApi();
+        return iterator_to_array($api->all(100, []));
     }
 }
