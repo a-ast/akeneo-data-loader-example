@@ -334,7 +334,7 @@ class PimDataRepository
 
         // Simply remove hierarchy to avoid fetching parent categories
         foreach ($categories as &$category) {
-            $category['parent'] = null;
+            $category['parent'] = 'master';
         }
 
         return $categories;
