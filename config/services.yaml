@@ -31,3 +31,7 @@ services:
         arguments:
             - '@Aa\AkeneoDataLoader\Api\Credentials'
 
+    Akeneo\Pim\ApiClient\AkeneoPimClientInterface:
+        factory: 'Aa\AkeneoDataLoader\LoaderFactory:createApiClient'
+        arguments:
+            - '@Aa\AkeneoDataLoader\Api\Credentials'

@@ -196,7 +196,7 @@ class PimDataRepository
         $this->removeNullsAndEmptyValues($data);
         $this->removeByKeys(
             $data,
-            ['created', 'updated', 'associations', '_links', 'sort_order']
+            ['family', 'created', 'updated', 'associations', '_links', 'sort_order']
         );
 
         return $data;
@@ -273,22 +273,27 @@ class PimDataRepository
         $pathPieces = explode('.', $asset['data']);
         $ext = $pathPieces[count($pathPieces) - 1];
 
-        return sprintf('data/asset/%s%s%s.%s', $code, $scope, $locale, $ext);
+        return sprintf('asset/%s%s%s.%s', $code, $scope, $locale, $ext);
 
     }
 
     private function replaceAssets(array &$data, array $assets)
     {
+        $imageAttributes = ['image', 'variation_image'];
+
         foreach ($data as &$item) {
 
-            if (false === isset($item['values']['image'])) {
-                continue;
-            }
+            foreach ($imageAttributes as $imageAttribute) {
 
-            foreach ($item['values']['image'] as &$assetData) {
+                if (false === isset($item['values'][$imageAttribute])) {
+                    continue;
+                }
 
-                $assetData['data'] = '@file:'.$assets[$assetData['data']];
-                unset($assetData['_links']);
+                foreach ($item['values'][$imageAttribute] as &$assetData) {
+
+                    $assetData['data'] = '@file:'.$assets[$assetData['data']];
+                    unset($assetData['_links']);
+                }
             }
         }
     }
