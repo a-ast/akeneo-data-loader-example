@@ -246,17 +246,21 @@ class PimDataRepository
 
     private function extractAssets(array $data): array
     {
+        $imageAttributes = ['image', 'variation_image'];
         $assets = [];
 
         foreach ($data as &$item) {
 
-            if (false === isset($item['values']['image'])) {
-                continue;
-            }
+            foreach ($imageAttributes as $imageAttribute) {
 
-            foreach ($item['values']['image'] as &$assetData) {
-                $resultedAssetName = $this->getAssetFileName($item, $assetData);
-                $assets[$assetData['data']] = $resultedAssetName;
+                if (false === isset($item['values'][$imageAttribute])) {
+                    continue;
+                }
+
+                foreach ($item['values'][$imageAttribute] as &$assetData) {
+                    $resultedAssetName = $this->getAssetFileName($item, $assetData);
+                    $assets[$assetData['data']] = $resultedAssetName;
+                }
             }
         }
 
