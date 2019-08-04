@@ -83,7 +83,7 @@ class DumpPimDataCommand extends Command
             $mediaResponse = $mediaApi->download($originalPath);
             $body = $mediaResponse->getBody();
 
-            file_put_contents($dumpPath, $body);
+            file_put_contents('data/'.$dumpPath, $body);
         }
     }
 }
