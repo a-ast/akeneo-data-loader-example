@@ -27,7 +27,7 @@ class PimDataRepository
         $attributeCodes = $this->getAttributeCodes($families);
         $attributes = $this->getAttributes($attributeCodes);
         $attributeOptions = $this->getAttributeOptions($attributes);
-        $attributeGroups = $this->getAttributeGroups($attributeCodes);
+        $attributeGroups = $this->getAttributeGroups();
 
         $productModels = $this->getProductModels($familyCodes);
         $productModelAssets = $this->extractAssets($productModels);
@@ -164,23 +164,14 @@ class PimDataRepository
         return $data;
     }
 
-    private function getAttributeGroups(array $attributeCodes): array
+    private function getAttributeGroups(): array
     {
         $api = $this->pimClient->getAttributeGroupApi();
         $data = iterator_to_array($api->all(100, []));
 
-        foreach ($data as $index => $item) {
+        foreach ($data as &$item) {
 
-            $existingAttributes = array_values(array_intersect(
-                $item['attributes'],
-                $attributeCodes
-            ));
-
-            $data[$index]['attributes'] = $existingAttributes;
-
-            if (0 === count($existingAttributes)) {
-                unset($data[$index]);
-            }
+            unset($item['attributes']);
         }
 
         return array_values($data);
